@@ -7,7 +7,7 @@ import com.doku.my.trainingsenangpay01.exception.uncheckexception.MyRuntimeExcep
  */
 public class TestExceptionExecutionOrder
 {
-    public static int div(int operand1, int operand2)
+    public static int div(int operand1, int operand2) throws NumberFormatException, IndexOutOfBoundsException
     {
         int result;
 

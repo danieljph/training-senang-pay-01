@@ -1,5 +1,8 @@
 package com.doku.my.trainingsenangpay01.package_class_datatypes.datatypes;
 
+import java.lang.reflect.Field;
+import java.util.Random;
+
 /**
  * @author Daniel Joi Partogi Hutapea
  */
@@ -74,10 +77,80 @@ public class BasicDataTypes
         System.out.println("lValue: " + lValue);
     }
 
+    /**
+     * Always use BigInteger or BigDecimal for a more precision number.
+     */
+    public static void precisionIssueUsingFloatOrDouble()
+    {
+        double d = 0;
+
+        for(int i=0; i<10; i++)
+        {
+            d += 0.1;
+        }
+
+        System.out.println("Value of d : "+ d); // Value of d : 0.9999999999999999
+        System.out.println("Is d == 1  : "+ (d==1.0)); // Is d == 1  : false
+    }
+
+    /**
+     * The wrapper type is immutable. Every change will create a new object.
+     */
+    public static void increaseValue(Integer value)
+    {
+        value++;
+        System.out.println("Value at increaseValue: "+ value);
+    }
+
+    /**
+     * For Java 11 you need to add this line below to VM Options:
+     *
+     * --add-opens java.base/java.lang=ALL-UNNAMED
+     */
+    public static void hackWrapperTypeCache()
+    {
+        try
+        {
+            Class<?> clazz = Class.forName("java.lang.Integer$IntegerCache");
+            Field field = clazz.getDeclaredField("cache");
+            field.setAccessible(true);
+            Integer[] cache = (Integer[]) field.get(clazz);
+
+            // Rewrite the Integer cache
+            for (int i = 0; i < cache.length; i++)
+            {
+                cache[i] = new Random().nextInt(cache.length);
+            }
+
+            // Prove randomness
+            for (int i = 0; i < 10; i++)
+            {
+                System.out.println((Integer) i);
+            }
+
+            // The Program will print a random number due to the cache has been hacked.
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace(System.err);
+        }
+    }
+
     public static void main(String[] args)
     {
         primitiveType();
         System.out.println("========================================");
         wrapperType();
+        System.out.println("========================================");
+        precisionIssueUsingFloatOrDouble();
+        System.out.println("========================================");
+
+        Integer value = 10;
+        increaseValue(value);
+        System.out.println("Value at main: "+ value);
+
+        System.out.println("========================================");
+
+        hackWrapperTypeCache();
     }
 }
